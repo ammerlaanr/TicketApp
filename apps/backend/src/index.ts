@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const readline = require('readline');
+const path = require('path');
 
 const axios = require('axios');
 
@@ -58,12 +61,13 @@ app.post('/events/:id', (req: any, res: any) => {
   const user = users.find((u: any) => u.email === email);
   const ticketNumbers = Array.from({length: aantal}, (_, i) => `${id}-${Date.now()}-${i+1}`);
 
-  const address = user ? `${user.postcode} ${user.huisnummer}` : 'Onbekend';
+  const address = user ? `${user.straatnaam} ${user.huisnummer}, ${user.postcode} - ${user.woonplaats}` : 'Onbekend';
 
   logTransaction({
     userId: user?.id ?? 'onbekend',
     eventId: id,
     tickets: ticketNumbers,
+    aantalTickets: ticketNumbers.length,
     address: address
   });
 
@@ -151,6 +155,45 @@ app.get('/api/adres', async(req: any, res: any) => {
           res.status(500).json({ error: 'Extern adres ophalen mislukt.'})
         }
 })
+
+const readLogsFromFile = async (filePath: string): Promise<any[]> => {
+  const logs: any[] = [];
+  const absolutePath = path.resolve(filePath);
+
+  if (!fs.existsSync(absolutePath)) return logs;
+
+  const fileStream = fs.createReadStream(absolutePath);
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+
+  for await (const line of rl) {
+    try {
+      const json = JSON.parse(line);
+      logs.push(json);
+    } catch (err) {
+      console.warn(`❗ Ongeldige JSON in ${filePath}:`, line);
+    }
+  }
+
+  return logs;
+};
+
+app.get('/logs', async (_req: any, res: any) => {
+  try {
+    const transactions = await readLogsFromFile('logs/transactions.log');
+    const registrations = await readLogsFromFile('logs/registrations.log');
+
+    res.json({
+      transactions,
+      registrations
+    });
+  } catch (error) {
+    console.error('🚨 Fout bij inlezen logs:', error);
+    res.status(500).json({ error: 'Kan logbestanden niet lezen.' });
+  }
+});
 
 users.push({ id: '1', voornaam: 'admin', achternaam: 'admin', email: 'admin@admin.com', wachtwoord: 'admin', postcode: '1234AB', huisnummer: 1, role: 'admin' });
 users.push({ id: '2', voornaam: 'user', achternaam: 'user', email: 'user@user.com', wachtwoord: 'user', postcode: '2345BC', huisnummer: 2, role: 'user' });

@@ -4,13 +4,14 @@ import path from 'path';
 const TRANSACTION_LOG_PATH = path.resolve('./logs/transactions.log');
 const REGISTRATION_LOG_PATH = path.resolve('./logs/registrations.log');
 
-export function logTransaction({ userId, eventId, tickets, address }: {userId: string, eventId: string, tickets: any, address: string}) {
+export function logTransaction({ userId, eventId, tickets, aantalTickets, address }: {userId: string, eventId: string, tickets: any, aantalTickets: number, address: string}) {
   const timestamp = new Date().toISOString();
   const logEntry = {
     timestamp,
     userId,
     eventId,
     tickets,
+    aantalTickets,
     address,
   };
 

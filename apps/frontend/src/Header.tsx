@@ -19,9 +19,16 @@ export default function Header() {
                 <li className="nav-item">
                   <Link className="nav-link" to="/events" style={{ color: '#ffffff' }}>Evenementen</Link>
                 </li>
-                {rol === 'admin' && <li>
-                  <Link className="nav-link" to="/addEvent" style={{ color: '#ffffff' }}>Voeg Event toe</Link>
-                </li>}
+                {rol === 'admin' && 
+                  <>
+                    <li>
+                      <Link className="nav-link" to="/addEvent" style={{ color: '#ffffff' }}>Voeg Event toe</Link>
+                    </li>
+                    <li>
+                      <Link className="nav-link" to="/admin/logging" style={{ color: '#ffffff' }}>Logging</Link>
+                    </li>
+                  </>
+                }
                 <li className="nav-item">
                   <button
                     className="btn btn-outline-light btn-sm ms-2" style={{ background: "#fff", color: "#EC008C", margin: "5px 0 0 0" }}
