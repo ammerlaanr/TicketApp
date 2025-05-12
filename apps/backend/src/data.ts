@@ -1,5 +1,3 @@
-// In-memory data storage voor de Ticket App
-
 export const users = [];
 export const events = [
   {
@@ -136,18 +134,6 @@ export const events = [
     ticketsRemaining: 484,
     ticketPrices: 37,
     description: 'Een cultureel festival vol muziek, lichtkunst en verhalen onder het mysterieuze noorderlicht van Groningen.'
-  }
-];
-
-export const tickets = [
-  {
-    id: 't1',
-    eventId: 'e1',
-    userId: '1',
-    type: 'standard',
-    status: 'active',
-    qrCode: 'QR-123456',
-    orderId: 'o1'
   }
 ];
 export const orders = [];

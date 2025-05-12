@@ -1,7 +1,8 @@
-// @ts-check
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+
+const { logTransaction } = require("./utils/logger");
 
 // In-memory data
 const { events, tickets, users, orders } = require('./data');
@@ -52,11 +53,24 @@ app.post('/events/:id', (req: any, res: any) => {
 
   event.ticketsRemaining -= aantal;
 
+  const user = users.find((u: any) => u.email === email);
+  const ticketNumbers = Array.from({length: aantal}, (_, i) => `${id}-${Date.now()}-${i+1}`);
+
+  const address = user ? `${user.postcode} ${user.huisnummer}` : 'Onbekend';
+
+  logTransaction({
+    userId: user?.id ?? 'onbekend',
+    eventId: id,
+    tickets: ticketNumbers,
+    address: address
+  });
+
   res.json({
     message: 'Tickets succesvol gekocht!',
     naam: naam,
     email: email,
     gekochteTickets: aantal,
+    ticketNummers: ticketNumbers
   });
 });
 
