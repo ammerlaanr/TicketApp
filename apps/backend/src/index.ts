@@ -1,0 +1,115 @@
+// @ts-check
+const express = require('express');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+
+// In-memory data
+const { events, tickets, users, orders } = require('./data');
+
+const SECRET_KEY = 'testnet2025';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+/**
+ * @param {any} _req
+ * @param {any} res
+ */
+
+// GET alle events
+app.get('/events', (_req: any, res: any) => {
+  res.json(events);
+});
+
+app.get('/events/:id', (req: any, res: any) => {
+  const { id } = req.params;
+  const event = events.find((e: any) => e.id === id);
+
+  if (!event) {
+    return res.status(404).json({message: 'Evenement niet gevonden'});
+  }
+
+  res.json(event);
+})
+
+app.post('/events/:id', (req: any, res: any) => {
+  const { id } = req.params;
+  const event = events.find((e: any) => e.id === id);
+  const { naam, email, aantal } = req.body;
+
+  if (!event) {
+    return res.status(404).json({message: 'Evenement niet gevonden'});
+  }
+  
+  if (typeof aantal !== 'number' || aantal <= 0) {
+    return res.status(400).json({ error: 'Ongeldig aantal tickets opgegeven.' });
+  }
+
+  if (aantal > event.ticketsRemaining) {
+    return res.status(400).json({ error: 'Niet genoeg tickets beschikbaar.' });
+  }
+
+  event.ticketsRemaining -= aantal;
+
+  res.json({
+    message: 'Tickets succesvol gekocht!',
+    naam: naam,
+    email: email,
+    gekochteTickets: aantal,
+  });
+});
+
+app.post('/admin/events', (req: any, res: any) => {
+  const { title, date, ticketPrices, ticketLimits, description } = req.body;
+  const ticketsRemaining = ticketLimits;
+  const newEvent = { id: String(Date.now()), title, date, ticketPrices, ticketLimits, ticketsRemaining, description };
+  events.push(newEvent);
+  res.status(201).json({ message: 'Event gemaakt', event: newEvent });
+});
+
+
+// Gebruiker registreren
+app.post('/users/register', (req: any, res: any) => {
+  const { voornaam, achternaam, email, wachtwoord, postcode, huisnummer } = req.body;
+  if (!email || !wachtwoord) {
+    return res.status(400).json({ error: 'Email en wachtwoord verplicht' });
+  }
+  if (users.find((u: any) => u.email === email)) {
+    return res.status(409).json({ error: 'Gebruiker bestaat al' });
+  }
+  const newUser = { id: String(Date.now()), voornaam, achternaam, email, wachtwoord, postcode, huisnummer, role: 'user' };
+  users.push(newUser);
+  res.status(201).json({ message: 'Registratie gelukt', user: { id: newUser.id, email: newUser.email } });
+});
+
+app.post('/admin/login', (req: any, res: any) => {
+  const { email, wachtwoord } = req.body;
+  const user = users.find((u: any) => u.email === email && u.wachtwoord === wachtwoord && u.role === 'admin');
+  if (!user) {
+    return res.status(401).json({ error: 'Ongeldige inloggegevens' });
+  } else {
+    res.json(user);
+  }
+});
+
+app.post('/users/login', (req: any, res: any) => {
+  const { email, wachtwoord } = req.body;
+  const user = users.find((u: any) => u.email === email && u.wachtwoord === wachtwoord);
+  if (!user) {
+    return res.status(401).json({ error: 'Ongeldige inloggegevens' });
+  } else {
+    const token = jwt.sign(req.body, SECRET_KEY, {
+      expiresIn: '1h',
+    })
+    res.json({ user: user, token: token });
+  }
+});
+
+users.push({ id: '1', voornaam: 'admin', achternaam: 'admin', email: 'admin@admin.com', wachtwoord: 'admin', postcode: '1234AB', huisnummer: 1, role: 'admin' });
+users.push({ id: '2', voornaam: 'user', achternaam: 'user', email: 'user@user.com', wachtwoord: 'user', postcode: '2345BC', huisnummer: 2, role: 'user' });
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Backend draait op http://localhost:${PORT}`);
+}); 
