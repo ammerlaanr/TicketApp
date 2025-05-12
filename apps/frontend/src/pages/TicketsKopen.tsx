@@ -105,7 +105,7 @@ export default function TicketOrderPage() {
                 Totaalprijs: €{(prijs * aantal).toFixed(2)}
               </div>
 
-              <Button type="submit" variant="primary" className="w-100">
+              <Button type="submit" style={{ background: "#EC008C", border: "none"}} className="w-100">
                 Bestellen
               </Button>
             </Form>

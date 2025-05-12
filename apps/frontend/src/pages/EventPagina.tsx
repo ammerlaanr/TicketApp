@@ -105,7 +105,7 @@ export default function AddEvent() {
         </div>
 
         <div className="text-end">
-          <button type="submit" className="btn btn-primary px-4">
+          <button type="submit" className="btn px-4" style={{ background: "#EC008C", border: "none"}}>
             Toevoegen
           </button>
         </div>

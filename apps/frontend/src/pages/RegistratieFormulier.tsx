@@ -58,7 +58,7 @@ export default function RegistratieFormulier() {
     e.preventDefault();
     console.log('Ingevoerde gegevens:', formData);
     axios.post('http://localhost:4000/users/register', formData)
-    
+
     navigate('/');
   };
 
@@ -179,7 +179,7 @@ export default function RegistratieFormulier() {
           </Col>
         </Row>
 
-        <Button variant="primary" type="submit" className="mt-4">
+        <Button style={{ background: "#EC008C", border: "none"}} type="submit" className="mt-4">
           Registreren
         </Button>
       </Form>

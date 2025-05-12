@@ -44,7 +44,7 @@ export default function EventList() {
                 <div className="card-body d-flex flex-column justify-content-between">
                   <h5 className="card-title">🎵 {event.title}</h5>
                   <div className="mb-2">
-                    <span className="badge bg-info text-dark me-2" style={{fontSize: 16}}>{event.date}</span>
+                    <span className="badge text-dark me-2" style={{fontSize: 16, border: "2px solid #EC008C"}}>{event.date}</span>
                   </div>
                   <div className="mb-2">
                     <span>💶 Prijs: €{event.ticketPrices}</span>
@@ -57,9 +57,9 @@ export default function EventList() {
                   </div>
                   <div className='mb-2'>
                     {event.ticketsRemaining > 0 ? (
-                      <Link to={`/events/${event.id}/tickets`} className="btn btn-success">Bestel nu je kaarten</Link>
+                      <Link to={`/events/${event.id}/tickets`} className="btn" style={{ background: "#EC008C", color: "#fff"}}>Bestel nu je kaarten</Link>
                     ): (
-                      <div className="btn btn-success disabled">Bestel nu je kaarten</div>
+                      <div className="btn disabled" style={{ background: "#EC008C", color: "#fff"}}>Bestel nu je kaarten</div>
                     )}
                     </div>
                 </div>

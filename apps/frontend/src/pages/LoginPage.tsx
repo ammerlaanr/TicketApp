@@ -71,7 +71,7 @@ export default function Login() {
                 />
               </Form.Group>
 
-              <Button variant="primary" type="submit" className="w-100">
+              <Button style={{ background: "#EC008C", border: "none"}} type="submit" className="w-100">
                 Inloggen
               </Button>
             </Form>
