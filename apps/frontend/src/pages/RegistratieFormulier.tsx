@@ -57,7 +57,8 @@ export default function RegistratieFormulier() {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     console.log('Ingevoerde gegevens:', formData);
-    axios.post('http://localhost:4000/users/register', formData) 
+    axios.post('http://localhost:4000/users/register', formData)
+    
     navigate('/');
   };
 

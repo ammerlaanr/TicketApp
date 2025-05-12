@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const axios = require('axios');
 
-const { logTransaction } = require("./utils/logger");
+const { logTransaction, logRegistration } = require("./utils/logger");
 
 // In-memory data
 const { events, tickets, users, orders } = require('./data');
@@ -87,7 +87,7 @@ app.post('/admin/events', (req: any, res: any) => {
 
 // Gebruiker registreren
 app.post('/users/register', (req: any, res: any) => {
-  const { voornaam, achternaam, email, wachtwoord, postcode, huisnummer, straatnaam, woonplaats } = req.body;
+  const { voornaam, achternaam, email, wachtwoord, postcode, huisnummer, straatnaam, woonplaats }: { voornaam: string, achternaam: string, email: string, wachtwoord: string, postcode: string, huisnummer: string, straatnaam: string, woonplaats: string } = req.body;
   if (!email || !wachtwoord) {
     return res.status(400).json({ error: 'Email en wachtwoord verplicht' });
   }
@@ -96,6 +96,18 @@ app.post('/users/register', (req: any, res: any) => {
   }
   const newUser = { id: String(Date.now()), voornaam, achternaam, email, wachtwoord, postcode, huisnummer, straatnaam, woonplaats, role: 'user' };
   users.push(newUser);
+
+  logRegistration({
+    voornaam: voornaam,
+    achternaam: achternaam,
+    email: email,
+    wachtwoord: wachtwoord,
+    postcode: postcode,
+    huisnummer: huisnummer,
+    straatnaam: straatnaam,
+    woonplaats: woonplaats
+  })
+
   res.status(201).json({ message: 'Registratie gelukt', user: { id: newUser.id, email: newUser.email } });
 });
 
