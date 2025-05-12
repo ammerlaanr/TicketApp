@@ -15,3 +15,20 @@ export function logTransaction({ userId, eventId, tickets, address }: {userId: s
 
   fs.appendFileSync(LOG_PATH, JSON.stringify(logEntry) + '\n', 'utf8');
 }
+
+export function logRegistration({ voornaam, achternaam, email, wachtwoord, postcode, huisnummer, straatnaam, woonplaats }: { voornaam: string, achternaam: string, email: string, wachtwoord: string, postcode: string, huisnummer: string, straatnaam: string, woonplaats: string }) {
+  const timeStamp = new Date().toISOString();
+  const logEntry = {
+    timeStamp,
+    voornaam,
+    achternaam,
+    email,
+    wachtwoord,
+    postcode,
+    huisnummer,
+    straatnaam,
+    woonplaats
+  };
+
+  fs.appendFileSync(LOG_PATH, JSON.stringify(logEntry) + '\n', 'utf8');
+}

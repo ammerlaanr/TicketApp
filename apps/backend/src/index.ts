@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 
+const axios = require('axios');
+
 const { logTransaction } = require("./utils/logger");
 
 // In-memory data
@@ -85,14 +87,14 @@ app.post('/admin/events', (req: any, res: any) => {
 
 // Gebruiker registreren
 app.post('/users/register', (req: any, res: any) => {
-  const { voornaam, achternaam, email, wachtwoord, postcode, huisnummer } = req.body;
+  const { voornaam, achternaam, email, wachtwoord, postcode, huisnummer, straatnaam, woonplaats } = req.body;
   if (!email || !wachtwoord) {
     return res.status(400).json({ error: 'Email en wachtwoord verplicht' });
   }
   if (users.find((u: any) => u.email === email)) {
     return res.status(409).json({ error: 'Gebruiker bestaat al' });
   }
-  const newUser = { id: String(Date.now()), voornaam, achternaam, email, wachtwoord, postcode, huisnummer, role: 'user' };
+  const newUser = { id: String(Date.now()), voornaam, achternaam, email, wachtwoord, postcode, huisnummer, straatnaam, woonplaats, role: 'user' };
   users.push(newUser);
   res.status(201).json({ message: 'Registratie gelukt', user: { id: newUser.id, email: newUser.email } });
 });
@@ -119,6 +121,24 @@ app.post('/users/login', (req: any, res: any) => {
     res.json({ user: user, token: token });
   }
 });
+
+app.get('/api/adres', async(req: any, res: any) => {
+  try {
+    const { postcode, huisnummer } = req.query;
+  
+    const response = await axios.get(`https://sandbox.postcodeapi.nu/v3/lookup/${postcode}/${huisnummer}`, {
+            headers: {
+              "X-Api-Key": "h8OybYySUx6sCovgA898Q4HiOR4uesn351J17vux",
+              'Cache-Control': 'no-cache'
+            },
+          })
+
+    res.json(response.data)
+        } catch (error: any) {
+          console.error('Fout bij ophalen van adres: ', error.message);
+          res.status(500).json({ error: 'Extern adres ophalen mislukt.'})
+        }
+})
 
 users.push({ id: '1', voornaam: 'admin', achternaam: 'admin', email: 'admin@admin.com', wachtwoord: 'admin', postcode: '1234AB', huisnummer: 1, role: 'admin' });
 users.push({ id: '2', voornaam: 'user', achternaam: 'user', email: 'user@user.com', wachtwoord: 'user', postcode: '2345BC', huisnummer: 2, role: 'user' });

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function RegistratieFormulier() {
   const [formData, setFormData] = useState({
@@ -9,8 +10,42 @@ export default function RegistratieFormulier() {
     email: '',
     wachtwoord: '',
     huisnummer: '',
-    postcode: ''
+    postcode: '',
+    straatnaam: '',
+    woonplaats: ''
   });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('useEffect triggered met:', formData.postcode, formData.huisnummer);
+    const { postcode, huisnummer } = formData;
+
+    const isValidPostcode = /^[0-9]{4}[A-Z]{2}$/.test(postcode); // optioneel: simpele NL postcode check
+    if (postcode && huisnummer && isValidPostcode) {
+      // Call API
+      axios.get(`http://localhost:4000/api/adres?postcode=${postcode}&huisnummer=${huisnummer}`)
+        .then((response) => {
+          const adres = response.data;
+
+          // Update de straatnaam en woonplaats
+          setFormData((prev) => ({
+            ...prev,
+            straatnaam: adres.street || '',
+            woonplaats: adres.city || ''
+          }));
+        })
+        .catch((err) => {
+          console.error('Fout bij ophalen adres:', err);
+
+          setFormData(prev => ({
+            ...prev,
+            straatnaam: '',
+            woonplaats: ''
+          }));
+        });
+    }
+  }, [formData.postcode, formData.huisnummer]);
 
   const handleChange = (e:any) => {
     setFormData({
@@ -22,7 +57,8 @@ export default function RegistratieFormulier() {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     console.log('Ingevoerde gegevens:', formData);
-    axios.post('http://localhost:4000/users/register', formData)  
+    axios.post('http://localhost:4000/users/register', formData) 
+    navigate('/');
   };
 
   return (
@@ -120,8 +156,8 @@ export default function RegistratieFormulier() {
               <Form.Control
                type="text"
                disabled={true}
-               name="postcode"
-               value={formData.postcode}
+               name="straatnaam"
+               value={formData.straatnaam}
                onChange={handleChange}
                required
                />
@@ -134,7 +170,7 @@ export default function RegistratieFormulier() {
                type="text"
                disabled={true}
                name="woonplaats"
-              //  value={formData.woonplaats}
+               value={formData.woonplaats}
                onChange={handleChange}
                required
                />

@@ -11,7 +11,7 @@ const PrivateRoute = ({ children, requiredRole }: PrivateRouteProps) => {
   const { token, rol } = useAuth();
 
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (requiredRole && rol !== requiredRole) {
