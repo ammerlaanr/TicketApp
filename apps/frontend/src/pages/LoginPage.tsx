@@ -9,7 +9,7 @@ export default function Login() {
   const [wachtwoord, setWachtwoord] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const { setToken, setRol } = useAuth();
+  const { setToken, setRol, setUser } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
@@ -28,6 +28,10 @@ export default function Login() {
 
       const rol = response.data.user.role;
       setRol(rol);
+
+      const naam = `${response.data.user.voornaam} ${response.data.user.achternaam}`;
+      const user = JSON.stringify({ email: email, naam: naam})
+      setUser(user);
 
       setSuccess(true);
       setTimeout(() => {

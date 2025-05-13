@@ -5,6 +5,7 @@ interface AuthContextType {
   rol: string | null;
   setToken: (token: string | null) => void;
   setRol: (rol: string | null) => void;
+  setUser: (user: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -14,8 +15,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return localStorage.getItem('token'); // bijv. initialiseren vanuit localStorage
   });
   const [rol, setRol] = useState<string | null>(() => {
-    console.log('Storage: ', localStorage.getItem('rol'));
     return localStorage.getItem('rol');
+  })
+  const [user, setUser] = useState<string | null>(() => {
+    return localStorage.getItem('user')
   })
 
   useEffect(() => {
@@ -30,10 +33,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       localStorage.removeItem('rol');
     }
-  }, [token, rol]);
-  console.log('AuthContext rol:', rol);
+
+    if (user) {
+      localStorage.setItem('user', user);
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [token, rol, user]);
   return (
-    <AuthContext.Provider value={{ token, rol, setToken, setRol }}>
+    <AuthContext.Provider value={{ token, rol, setToken, setRol, setUser }}>
       {children}
     </AuthContext.Provider>
   );

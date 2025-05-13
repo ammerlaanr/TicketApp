@@ -2,11 +2,12 @@ import { useAuth } from './AuthContext';
 import { Link } from 'react-router-dom';
 
 export default function Header() {
-  const { token, rol, setToken, setRol } = useAuth();
+  const { token, rol, setToken, setRol, setUser } = useAuth();
 
   const handleLogout = () => {
     setToken(null);
     setRol(null);
+    setUser(null)
   };
   
   return (

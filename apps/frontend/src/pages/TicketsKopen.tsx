@@ -21,6 +21,13 @@ export default function TicketOrderPage() {
   const { eventId } = useParams();
 
   useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setEmail(parsedUser.email);
+      setName(parsedUser.naam);
+    }
+    
     axios.get(`http://localhost:4000/events/${eventId}`)
       .then(response => {
         setPrijs(response.data.ticketPrices);
@@ -46,19 +53,9 @@ export default function TicketOrderPage() {
     axios.post(`http://localhost:4000/events/${eventId}`, { name, email, aantal });
     console.log('Bestelling geplaatst:', { name, email, aantal });
 
-    // const location = "Ahoy Rotterdam";
-    // const tickets = ["Ticket123"];
-    // const address = "Kerkstraat 1, 1234 AB Amsterdam";
-    // axios.post('http://localhost:4000/send-ticket', { email, name, eventName, date, location, tickets, address})
-    // console.log('Email verstuurd');
     const tickets = generateTickets(aantal); // Genereer 3 tickets
     setTicketNumbers(tickets);
     setShowModal(true);
-
-    // Reset of niet, afhankelijk van wat je wilt
-    // setName('');
-    // setEmail('');
-    // setQuantity(1);
   };
 
   const handlePurchase = () => {
