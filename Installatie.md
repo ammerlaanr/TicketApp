@@ -25,4 +25,6 @@ Als deze vereisten zijn gedownload, kan het project binnen gehaald worden. Het p
 https://github.com/ammerlaanr/TicketApp.git
 ```
 
-Selecteer nu een map op je systeem om het project in op te slaan (Advies: maak een nieuwe map aan, dan kan je hem later altijd nog vinden) en klik op **Select as Repository Destination**. Het project wordt gekloond en je kan nu de code bekijken. 
+Selecteer nu een map op je systeem om het project in op te slaan (Advies: maak een nieuwe map aan, dan kan je hem later altijd nog vinden) en klik op **Select as Repository Destination**. Het project wordt gekloond en je kan nu de code bekijken.
+
+Ga nu verder met het [starten van de applicatie](Opstarten.md)
