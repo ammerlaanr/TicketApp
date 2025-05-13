@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Container, Form, Button, Row, Col, Card, Alert } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { TicketModal } from '../modals/TicketModal';
 
 export default function TicketOrderPage() {
   const [name, setName] = useState('');
@@ -11,7 +12,9 @@ export default function TicketOrderPage() {
   const [error, setError] = useState('');
   const [prijs, setPrijs] = useState(0);
   const [eventName, setEventName] = useState('');
-  const [date, setDate] = useState('');
+  const [_date, setDate] = useState('');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [ticketNumbers, setTicketNumbers] = useState<string[]>([]);
 
   const navigate = useNavigate();
 
@@ -43,21 +46,34 @@ export default function TicketOrderPage() {
     axios.post(`http://localhost:4000/events/${eventId}`, { name, email, aantal });
     console.log('Bestelling geplaatst:', { name, email, aantal });
 
-    const location = "Ahoy Rotterdam";
-    const tickets = ["Ticket123"];
-    const address = "Kerkstraat 1, 1234 AB Amsterdam";
-    axios.post('http://localhost:4000/send-ticket', { email, name, eventName, date, location, tickets, address})
-    console.log('Email verstuurd');
+    // const location = "Ahoy Rotterdam";
+    // const tickets = ["Ticket123"];
+    // const address = "Kerkstraat 1, 1234 AB Amsterdam";
+    // axios.post('http://localhost:4000/send-ticket', { email, name, eventName, date, location, tickets, address})
+    // console.log('Email verstuurd');
+    const tickets = generateTickets(aantal); // Genereer 3 tickets
+    setTicketNumbers(tickets);
+    setShowModal(true);
 
-    navigate('/events')
     // Reset of niet, afhankelijk van wat je wilt
     // setName('');
     // setEmail('');
     // setQuantity(1);
   };
 
+  const handlePurchase = () => {
+    navigate('/events')
+  };
+
+  const generateTickets = (amount: number): string[] => {
+    console.log('Aantal tickets: ', amount);
+    return Array.from({ length: amount }, () =>
+      `TICKET-${Math.floor(Math.random() * 1000000)}`
+    );
+  };
+
   return (
-    <Container className="mt-5">
+    <><Container className="mt-5">
       <Row className="justify-content-md-center">
         <Col md={6}>
           <Card className="p-4 shadow">
@@ -113,5 +129,12 @@ export default function TicketOrderPage() {
         </Col>
       </Row>
     </Container>
+
+    <TicketModal
+      show={showModal}
+      onHide={handlePurchase}
+      ticketNumbers={ticketNumbers}
+    />
+    </>
   );
 };
