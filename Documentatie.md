@@ -196,3 +196,88 @@ runtime, with proper indexing (e.g., by ID) for fast lookup. (Traced BR/FR: All)
 TR-014 - The backend shall call an external address verification API
 during user registration to retrieve the correct city based
 on postal code and house number. (Traced BR/FR: BR-003, FR-004)
+
+## APIs
+
+Hieronder een overzicht van de APIs en een voorbeeld hiervan:
+
+### Haal alle evenementen op
+GET `/events`
+``` 
+http://localhost:4000/events
+```
+
+### Haal informatie op over 1 specifiek evenement
+GET `/events/:id`
+``` 
+http://localhost:4000/events/e1
+```
+
+### Koop tickets voor een evenement
+POST `/events/:id`
+```
+http://localhost:4000/events/e2
+
+{
+  "naam": "Jan Jansen",
+  "email": "jan@example.com",
+  "aantal": 2
+}
+```
+
+### Nieuw event aanmaken (admin)
+POST `/admin/events`
+```
+http://localhost:4000/admin/events
+
+{
+  "title": "Concert Night",
+  "date": "2025-08-01",
+  "ticketPrices": 25,
+  "ticketLimits": 100,
+  "description": "Een avond vol muziek!"
+}
+```
+
+### Gebruiker registreren
+POST `/users/register`
+```
+http://localhost:4000/users/register
+
+{
+  "voornaam": "Sophie",
+  "achternaam": "de Vries",
+  "email": "sophie@example.com",
+  "wachtwoord": "wachtwoord123",
+  "postcode": "1234AB",
+  "huisnummer": "10",
+  "straatnaam": "Lindelaan",
+  "woonplaats": "Utrecht"
+}
+```
+
+### Login
+POST `/users/login`
+```
+http://localhost:4000/users/register
+
+{
+  "email": "gebruiker@example.com",
+  "wachtwoord": "wachtwoord123"
+}
+```
+
+### Adresgegevens ophalen via postcode + huisnummer
+GET `/api/adres?postcode=1234AB&huisnummer=10`
+
+NOTE: Gebruik de Sandbox postcodes van [deze pagina](https://www.postcodeapi.nu/docs)
+
+```
+http://localhost:4000/api/adres?postcode=6545CA&huisnummer=29
+```
+
+### logs
+GET `/logs`
+```
+http://localhost:4000/users/register
+```
