@@ -1,1 +1,3 @@
 apps/backend/logs/transactions.log
+**/node_modules
+**/package-lock.json
