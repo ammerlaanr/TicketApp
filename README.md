@@ -38,4 +38,16 @@ npx ts-node-dev src/index.ts
 ```
 npm run dev
 ```
+
+### Users
+User:
+Username: user@user.com
+Password: user
+
+Admin:
+Username: admin@admin.com
+Password: admin
+
+### Terminal
+Er is een rechten issue in Powershell waardoor NPM niet out-of-the-box werkt. Als je een terminal opent (CTRL + SHIFT + `), klik dan eerst op het plusje en selecteer `Command Prompt`.
  
